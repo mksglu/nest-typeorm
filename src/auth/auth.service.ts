@@ -1,30 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../user/user.service';
 import { User } from '../user/user.entity';
-import * as jwt from 'jsonwebtoken';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
-    // @InjectRepository(User)
-    private readonly usersService: Repository<User>,
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async createToken(id: number, username: string) {
-    const expiresIn = 60 * 60;
-    const secretOrKey = 'secret';
-    const user = { username };
-    const token = jwt.sign(user, secretOrKey, { expiresIn });
-
-    return { expires_in: expiresIn, token };
+  private async validate(userData: User): Promise<User> {
+    return await this.usersService.findOne({
+      where: { email: userData.email },
+    });
   }
 
-  async validateUser(signedUser: User): Promise<boolean> {
-    if (signedUser && signedUser.email) {
-      const { email } = signedUser;
-      return Boolean(this.usersService.findOne({ email }));
-    }
+  async createToken(id: number, username: string) {
+    const payload = `${id}${username}`;
+    const accessToken = this.jwtService.sign(payload);
+
+    return {
+      expires_in: 3600,
+      access_token: accessToken,
+      user_id: id,
+    };
   }
 }
