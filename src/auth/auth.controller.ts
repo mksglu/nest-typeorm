@@ -19,14 +19,8 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  async loginUser(@Response() res: Response, @Body() body: LoginDto) {
+  async loginUser(@Body() body: LoginDto) {
     const { email, password } = body;
-    const user = await this.usersService.findOne({ where: { email } });
-
-    if (user) {
-      // TODO: Compare Hash
-    }
-
-    return res.json({});
+    return await this.authService.login(email, password);
   }
 }
