@@ -3,8 +3,6 @@ import { Book } from '../book/book.entity';
 import * as bcrypt from 'bcrypt';
 @Entity()
 export class User {
-  private saltRounds = 10;
-
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -13,7 +11,7 @@ export class User {
 
   @BeforeInsert()
   async hashPassword() {
-    this.password = String(await bcrypt.hash(this.password, this.saltRounds));
+    this.password = String(await bcrypt.hash(this.password, 10));
   }
   @Column()
   password: string;

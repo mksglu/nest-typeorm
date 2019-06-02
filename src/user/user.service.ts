@@ -6,7 +6,6 @@ import { IUser } from './interfaces/user.interfaces';
 import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UsersService {
-  private saltRounds = 10;
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
