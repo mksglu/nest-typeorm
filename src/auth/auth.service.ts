@@ -13,7 +13,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  private async validate(email: string): Promise<User> {
+  async validate(email: string): Promise<User> {
     return await this.usersService.findOne({
       where: { email },
     });
@@ -42,8 +42,12 @@ export class AuthService {
     }
   }
 
-  async createToken(id: number, username: string) {
-    const payload = `${id}${username}`;
+  async createToken(id: number, email: string) {
+    const payload = {
+      id,
+      email,
+    };
+
     const accessToken = this.jwtService.sign(payload);
 
     return {
