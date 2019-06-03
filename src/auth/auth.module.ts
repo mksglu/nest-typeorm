@@ -6,9 +6,12 @@ import { UsersService } from '../user/user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { Role } from './role.entity'
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([Role]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     UsersModule,
     JwtModule.register({

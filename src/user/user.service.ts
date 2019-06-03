@@ -27,8 +27,11 @@ export class UsersService {
 
   async createUser(payload: IUser) {
     const isDuplicateUser = await this.isDuplicateUser(payload.email);
+    // const role = 2;
     if (!isDuplicateUser) {
+      // const data = { ...payload, role };
       const newUser = this.userRepository.create(payload);
+      newUser.roleId = 2
       await this.userRepository.save(newUser);
     } else {
       throw new HttpException(

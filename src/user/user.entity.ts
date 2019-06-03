@@ -1,5 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BeforeInsert } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  OneToOne,
+  BeforeInsert,
+  JoinColumn,
+} from 'typeorm';
 import { Book } from '../book/book.entity';
+import { Role } from '../auth/role.entity';
 import * as bcrypt from 'bcrypt';
 @Entity()
 export class User {
@@ -21,4 +30,8 @@ export class User {
 
   @OneToMany(type => Book, book => book.user)
   books: Book[];
+
+  @OneToOne(type => Role, role => role.id)
+  @JoinColumn()
+  role: Role
 }
