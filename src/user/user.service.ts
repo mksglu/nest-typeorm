@@ -20,18 +20,15 @@ export class UsersService {
   async findOne(findOptions?: FindOneOptions<User>): Promise<User> {
     return this.userRepository.findOne(findOptions);
   }
-  // async hashPassword(password: string): Promise<string> {
-  //   return bcrypt.hash(password, this.saltRounds);
-  // }
+
   async isDuplicateUser(email: string): Promise<boolean> {
     return Boolean(await this.findOne({ where: { email } }));
   }
-  async createUser(User: IUser) {
-    const isDuplicateUser = await this.isDuplicateUser(User.email);
+
+  async createUser(payload: IUser) {
+    const isDuplicateUser = await this.isDuplicateUser(payload.email);
     if (!isDuplicateUser) {
-      // const password = await this.hashPassword(User.password);
-      // const user = { ...User, password };a
-      const newUser = this.userRepository.create(User);
+      const newUser = this.userRepository.create(payload);
       await this.userRepository.save(newUser);
     } else {
       throw new HttpException(
@@ -43,6 +40,7 @@ export class UsersService {
       );
     }
   }
+
   async compareHash(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
   }
