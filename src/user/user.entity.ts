@@ -8,6 +8,7 @@ import {
   ManyToMany,
   OneToOne,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 import { Book } from '../book/book.entity';
 import { Role } from '../auth/role.entity';
@@ -33,7 +34,7 @@ export class User {
   @OneToMany(type => Book, book => book.user)
   books: Book[];
 
-  @OneToOne(type=>Role, role=> role.id, { cascade: ['insert', 'update'] })
-  @JoinColumn({name:'roleId'})
-  roles: Role
+  @ManyToMany(type => Role, role=>role.id,{cascade:true})
+  @JoinTable()
+  roles: Role[];
 }

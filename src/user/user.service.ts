@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IndexOptions } from 'typeorm';
 import { IUser } from './interfaces/user.interfaces';
 import * as bcrypt from 'bcrypt';
+import { Role } from 'dist/auth/role.entity';
 @Injectable()
 export class UsersService {
   constructor(
@@ -28,7 +29,7 @@ export class UsersService {
   async createUser(payload: IUser) {
     if (!(await this.isDuplicateUser(payload.email))) {
       const user = this.userRepository.create(payload);
-      user.roles = { role_name: 'editor', id: 1 }
+      user.roles = [{ role_name: 'editor', id: 1 }];
       await this.userRepository.save(user);
     } else {
       throw new HttpException(

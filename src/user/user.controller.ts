@@ -12,7 +12,7 @@ export class UserController {
 
   @Get('/')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin')
+  @Roles('admin','editor')
   getAllUsers(): Promise<User[]> {
     return this.userService.getAllUsers();
   }
