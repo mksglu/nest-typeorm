@@ -34,7 +34,10 @@ export class User {
   @OneToMany(type => Book, book => book.user)
   books: Book[];
 
-  @ManyToMany(type => Role, role=>role.id,{cascade:true})
-  @JoinTable()
-  roles: Role[];
+  // @ManyToMany(type => Role, role=>role.id,{cascade:true})
+  // @JoinTable()
+  // roles: Role[];
+
+  @ManyToOne(type=>Role,role=>role.id,{cascade:true})
+  role:Role;
 }

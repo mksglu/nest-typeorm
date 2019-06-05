@@ -14,19 +14,18 @@ export class RolesGuard extends AuthGuard('jwt') {
     super();
   }
 
-  async canActivate(context: ExecutionContext):Promise<any> {
+  async canActivate(context: ExecutionContext): Promise<any> {
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
     if (!roles) {
       return true;
     }
 
     const request = context.switchToHttp().getRequest();
-    let user = await this.userRepository.find({
-      relations:['roles'],
-      where:{id:request.user.id}
-    })
-    const role_name = user[0].roles[0].role_name
-    const hasRole = () => roles.includes(role_name)
-    return request.user && hasRole() ? super.canActivate(context) : false;
+    const user = await this.userRepository.find({
+      relations: ['role'],
+      where: { id: request.user.id },
+    });
+    const hasRole = () => user.some((role) => roles.includes(role.role.role_name));
+    return request.user && user && hasRole() ? super.canActivate(context) : false;
   }
 }
