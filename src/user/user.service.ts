@@ -1,14 +1,14 @@
 import { User } from './user.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOneOptions } from 'typeorm';
+import { Repository, IndexOptions } from 'typeorm';
 import { IUser } from './interfaces/user.interfaces';
 import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly userRepository: Repository<User>
   ) {
     console.log('user service called');
   }
@@ -17,7 +17,7 @@ export class UsersService {
     console.log('get all users');
     return await this.userRepository.find({ relations: ['books'] });
   }
-  async findOne(findOptions?: FindOneOptions<User>): Promise<User> {
+  async findOne(findOptions: any): Promise<User> {
     return this.userRepository.findOne(findOptions);
   }
 
@@ -26,13 +26,10 @@ export class UsersService {
   }
 
   async createUser(payload: IUser) {
-    const isDuplicateUser = await this.isDuplicateUser(payload.email);
-    // const role = 2;
-    if (!isDuplicateUser) {
-      // const data = { ...payload, role };
-      const newUser = this.userRepository.create(payload);
-      newUser.roleId = 2
-      await this.userRepository.save(newUser);
+    if (!(await this.isDuplicateUser(payload.email))) {
+      const user = this.userRepository.create(payload);
+      user.roles = { role_name: 'editor', id: 1 }
+      await this.userRepository.save(user);
     } else {
       throw new HttpException(
         {

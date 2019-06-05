@@ -3,8 +3,10 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToMany,
-  OneToOne,
   BeforeInsert,
+  JoinTable,
+  ManyToMany,
+  OneToOne,
   JoinColumn,
 } from 'typeorm';
 import { Book } from '../book/book.entity';
@@ -31,7 +33,7 @@ export class User {
   @OneToMany(type => Book, book => book.user)
   books: Book[];
 
-  @OneToOne(type => Role, role => role.id)
-  @JoinColumn()
-  role: Role
+  @OneToOne(type=>Role, role=> role.id, { cascade: ['insert', 'update'] })
+  @JoinColumn({name:'roleId'})
+  roles: Role
 }
